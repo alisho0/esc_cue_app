@@ -35,6 +35,7 @@ class Alumno(models.Model):
 
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100)
+    curso = models.CharField(max_length=150)
 
     cumple_asistencia = models.BooleanField(
         null=True,

@@ -1,43 +1,43 @@
-cue,nombre,apellido,cumple_asistencia
-860177600,Juan,García,True
-860177600,María,López,True
-860177600,Carlos,Rodríguez,False
-860177600,Ana,Martínez,True
-860178400,Pedro,Sánchez,True
-860178400,Laura,Fernández,False
-860178400,Miguel,González,True
-860181800,Sandra,Díaz,True
-860181800,Roberto,Ramírez,True
-860181800,Claudia,Torres,False
-860182600,Fernando,Vargas,True
-860182600,Beatriz,Castro,True
-860110800,Javier,Moreno,False
-860110800,Elena,Romero,True
-860110800,Andrés,Medina,True
-860178500,Verónica,Jiménez,True
-860178500,Daniel,Flores,False
-860126000,Patricia,Vega,True
-860126000,Marcelo,Silva,True
-860183200,Lorena,Gómez,False
-860183200,Gonzalo,Ortiz,True
-860175000,Adriana,Ruiz,True
-860175000,Ricardo,Molina,True
-860181500,Mónica,Campos,False
-860181500,Sergio,Cabrera,True
-860032302,Silvia,Acosta,True
-860032302,Alejandro,Herrera,True
-860181600,Daniela,Aguilar,False
-860181600,Matías,Salazar,True
-860178000,Constanza,Miranda,True
-860178000,Pablo,Bravo,True
-860178300,Roxana,Carrasco,False
-860178300,Felipe,Navarro,True
-860180900,Viviana,Fuentes,True
-860182200,Nicolás,Barrera,True
-860187500,Francisca,Reyes,False
-860187500,Cristian,Soto,True
-860181700,Marisol,Parra,True
-860183000,Enrique,Guzmán,True
-860122200,Amparo,Rivas,False
-860122200,Julio,Escobar,True
-86032302,Graciela,Varela,True
+cue,nombre,apellido,cumple_asistencia,curso
+860177600,Juan,García,True,1° A
+860177600,María,López,True,1° A
+860177600,Carlos,Rodríguez,False,1° A
+860177600,Ana,Martínez,True,1° A
+860178400,Pedro,Sánchez,True,1° B
+860178400,Laura,Fernández,False,1° B
+860178400,Miguel,González,True,1° B
+860181800,Sandra,Díaz,True,2° A
+860181800,Roberto,Ramírez,True,2° A
+860181800,Claudia,Torres,False,2° A
+860182600,Fernando,Vargas,True,2° B
+860182600,Beatriz,Castro,True,2° B
+860110800,Javier,Moreno,False,3° A
+860110800,Elena,Romero,True,3° A
+860110800,Andrés,Medina,True,3° A
+860178500,Verónica,Jiménez,True,3° B
+860178500,Daniel,Flores,False,3° B
+860126000,Patricia,Vega,True,4° A
+860126000,Marcelo,Silva,True,4° A
+860183200,Lorena,Gómez,False,4° B
+860183200,Gonzalo,Ortiz,True,4° B
+860175000,Adriana,Ruiz,True,5° A
+860175000,Ricardo,Molina,True,5° A
+860181500,Mónica,Campos,False,5° B
+860181500,Sergio,Cabrera,True,5° B
+860032302,Silvia,Acosta,True,6° A
+860032302,Alejandro,Herrera,True,6° A
+860181600,Daniela,Aguilar,False,6° B
+860181600,Matías,Salazar,True,6° B
+860178000,Constanza,Miranda,True,7° A
+860178000,Pablo,Bravo,True,7° A
+860178300,Roxana,Carrasco,False,7° B
+860178300,Felipe,Navarro,True,7° B
+860180900,Viviana,Fuentes,True,8° A
+860182200,Nicolás,Barrera,True,8° B
+860187500,Francisca,Reyes,False,9° A
+860187500,Cristian,Soto,True,9° A
+860181700,Marisol,Parra,True,9° B
+860183000,Enrique,Guzmán,True,10° A
+860122200,Amparo,Rivas,False,10° B
+860122200,Julio,Escobar,True,10° B
+86032302,Graciela,Varela,True,11° A

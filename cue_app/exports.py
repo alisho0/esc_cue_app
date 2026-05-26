@@ -16,6 +16,7 @@ def generar_excel_global():
         "CUE",
         "Nombre",
         "Apellido",
+        "Curso",
         "Cumple el 80% de asistencia"
     ]
 
@@ -32,6 +33,7 @@ def generar_excel_global():
             alumno.escuela.cue,
             alumno.nombre,
             alumno.apellido,
+            alumno.curso,
             "Sí" if alumno.cumple_asistencia else "No"
         ])
 

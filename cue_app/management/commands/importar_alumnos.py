@@ -21,7 +21,8 @@ class Command(BaseCommand):
                     escuela=escuela,
                     nombre=row['nombre'],
                     apellido=row['apellido'],
-                    cumple_asistencia=cumple
+                    cumple_asistencia=cumple,
+                    curso=row['curso']
                 )
             
             self.stdout.write(self.style.SUCCESS('Alumnos importados exitosamente'))
