@@ -1,6 +1,38 @@
 from django.contrib import admin
-from .models import Alumno, Escuela
+from django.urls import reverse
+from django.utils.html import format_html
+
+from .models import Escuela, Alumno
 
 # Register your models here.
-admin.site.register(Escuela)
 admin.site.register(Alumno)
+
+@admin.register(Escuela)
+class EscuelaAdmin(admin.ModelAdmin):
+
+    change_list_template = (
+        'admin/escuelas_change_list.html'
+    )
+
+    list_display = (
+        'nombre',
+        'cue',
+        'exportar_excel'
+    )
+
+    def exportar_excel(self, obj):
+
+        url = reverse(
+            'exportar_escuela',
+            args=[obj.id]
+        )
+
+        return format_html(
+            '<a class="button" '
+            'href="{}">'
+            'Descargar Excel'
+            '</a>',
+            url
+        )
+
+    exportar_excel.short_description = 'Excel'
