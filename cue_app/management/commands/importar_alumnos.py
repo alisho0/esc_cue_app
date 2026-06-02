@@ -11,7 +11,11 @@ class Command(BaseCommand):
             reader = csv.DictReader(file)
 
             for row in reader:
-                escuela = Escuela.objects.get(cue=row['cue'])
+                cue = row['cue'].strip()
+
+                print("Buscando:", repr(cue))
+
+                escuela = Escuela.objects.get(cue=cue)
 
                 cumple = None
                 if 'cumple_asistencia' in row:
@@ -22,7 +26,9 @@ class Command(BaseCommand):
                     nombre=row['nombre'],
                     apellido=row['apellido'],
                     cumple_asistencia=cumple,
-                    curso=row['curso']
+                    curso=row['curso'],
+                    localidad=row['localidad'],
+                    dni=row['dni']
                 )
             
             self.stdout.write(self.style.SUCCESS('Alumnos importados exitosamente'))
