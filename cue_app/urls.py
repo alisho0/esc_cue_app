@@ -7,4 +7,5 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('exportar/', exportar_excel, name='exportar_excel'),
     path('exportar/<int:escuela_id>/', exportar_escuela, name='exportar_escuela'),
+    path('finalizar-carga/', finalizar_carga, name='finalizar_carga')
 ]

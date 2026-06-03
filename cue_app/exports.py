@@ -12,12 +12,15 @@ def generar_excel_global():
     ws.title = "Alumnos"
 
     headers = [
-        "Escuela",
-        "CUE",
         "Nombre",
         "Apellido",
+        "DNI",
+        "Localidad",
         "Curso",
-        "Cumple el 80% de asistencia"
+        "Escuela",
+        "CUE",
+        "Cumple el 80% de asistencia",
+        "Creado por escuela"
     ]
 
     ws.append(headers)
@@ -27,14 +30,16 @@ def generar_excel_global():
     )
 
     for alumno in alumnos:
-
         ws.append([
-            alumno.escuela.nombre,
-            alumno.escuela.cue,
             alumno.nombre,
             alumno.apellido,
+            alumno.dni,
+            alumno.localidad,
             alumno.curso,
-            "Sí" if alumno.cumple_asistencia else "No"
+            alumno.escuela.nombre,
+            alumno.escuela.cue,
+            "Sí" if alumno.cumple_asistencia else "No",
+            "Sí" if alumno.creado_por_escuela else "No"
         ])
 
     return wb
@@ -55,7 +60,13 @@ def generar_excel_escuela(escuela_id):
     headers = [
         "Nombre",
         "Apellido",
-        "Cumple el 80% de asistencia"
+        "DNI",
+        "Localidad",
+        "Curso",
+        "Escuela",
+        "CUE",
+        "Cumple el 80% de asistencia",
+        "Creado por escuela"
     ]
 
     ws.append(headers)
@@ -69,7 +80,13 @@ def generar_excel_escuela(escuela_id):
         ws.append([
             alumno.nombre,
             alumno.apellido,
-            "Sí" if alumno.cumple_asistencia else "No"
+            alumno.dni,
+            alumno.localidad,
+            alumno.curso,
+            alumno.escuela.nombre,
+            alumno.escuela.cue,
+            "Sí" if alumno.cumple_asistencia else "No",
+            "Sí" if alumno.creado_por_escuela else "No"
         ])
 
     return wb

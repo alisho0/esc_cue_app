@@ -22,6 +22,10 @@ class Escuela(models.Model):
         blank=True
     )
 
+    asistencia_completada = models.BooleanField(
+        default=False
+    )
+
     def __str__(self):
         return self.cue
 
@@ -42,6 +46,10 @@ class Alumno(models.Model):
     cumple_asistencia = models.BooleanField(
         null=True,
         blank=True
+    )
+
+    creado_por_escuela = models.BooleanField(
+        default=False
     )
 
     def __str__(self):

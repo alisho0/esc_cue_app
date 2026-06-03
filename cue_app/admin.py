@@ -17,7 +17,12 @@ class EscuelaAdmin(admin.ModelAdmin):
     list_display = (
         'nombre',
         'cue',
+        'asistencia_completada',
         'exportar_excel'
+    )
+
+    list_filter = (
+        'asistencia_completada',
     )
 
     def exportar_excel(self, obj):

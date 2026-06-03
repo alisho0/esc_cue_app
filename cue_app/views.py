@@ -35,6 +35,13 @@ def login_view(request):
         {'error': error}
     )
 
+@login_required
+def finalizar_carga(request):
+    escuela = request.user.escuela
+    escuela.asistencia_completada = True
+    escuela.save()
+
+    return redirect('dashboard') 
 
 @login_required
 def dashboard(request):
