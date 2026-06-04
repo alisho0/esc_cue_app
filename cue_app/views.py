@@ -58,7 +58,7 @@ def dashboard(request):
         escuela=escuela
     )
 
-    if request.method == "POST" and 'cumple_' in str(request.POST):
+    if request.method == "POST":
 
         for alumno in alumnos:
 
