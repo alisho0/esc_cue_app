@@ -28,7 +28,8 @@ class Command(BaseCommand):
                     cumple_asistencia=cumple,
                     curso=row['curso'],
                     localidad=row['localidad'],
-                    dni=row['dni']
+                    dni=row['dni'],
+                    creado_por_escuela=False
                 )
             
             self.stdout.write(self.style.SUCCESS('Alumnos importados exitosamente'))

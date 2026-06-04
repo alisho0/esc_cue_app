@@ -30,7 +30,8 @@ DEBUG = config(
     cast=bool
 )
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['vps-6044341-x.dattaweb.com',
+'www.vps-6044341-x.dattaweb.com']
 
 
 # Application definition

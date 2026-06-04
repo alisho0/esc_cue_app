@@ -2,6 +2,7 @@ from django.http import HttpResponse
 
 from .exports import generar_excel_global, generar_excel_escuela
 from .models import Escuela, Alumno
+from .forms import AlumnoForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -57,7 +58,7 @@ def dashboard(request):
         escuela=escuela
     )
 
-    if request.method == "POST":
+    if request.method == "POST" and 'cumple_' in str(request.POST):
 
         for alumno in alumnos:
 
@@ -130,3 +131,31 @@ def exportar_escuela(request, escuela_id):
     wb.save(response)
 
     return response
+
+
+@login_required
+def agregar_alumno(request):
+
+    if request.user.is_staff:
+        return redirect('/admin')
+
+    escuela = Escuela.objects.get(
+        user=request.user
+    )
+
+    if request.method == "POST":
+        form = AlumnoForm(request.POST)
+        if form.is_valid():
+            alumno = form.save(commit=False)
+            alumno.escuela = escuela
+            alumno.creado_por_escuela = True
+            alumno.save()
+            return redirect('dashboard')
+    else:
+        form = AlumnoForm()
+
+    return render(
+        request,
+        'escuelas/agregar_alumno.html',
+        {'form': form, 'escuela': escuela}
+    )
