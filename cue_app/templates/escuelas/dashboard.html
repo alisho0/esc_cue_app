@@ -75,7 +75,8 @@
                                     <td>{{ alumno.curso }}</td>
                                     <td class="text-center">
                                         <div class="form-check form-switch justify-content-center d-flex mb-0">
-                                            <input class="form-check-input" type="checkbox" id="cumple_{{ alumno.id }}" name="cumple_{{ alumno.id }}" {% if alumno.cumple_asistencia %}checked{% endif %}>
+					    <input type="hidden" name="cumple_{{ alumno.id }}" value="off">
+                                            <input class="form-check-input" type="checkbox" id="cumple_{{ alumno.id }}" name="cumple_{{ alumno.id }}" value="on" {% if alumno.cumple_asistencia %}checked{% endif %}>
                                         </div>
                                     </td>
                                     <td class="text-center">

@@ -31,7 +31,7 @@ DEBUG = config(
 )
 
 ALLOWED_HOSTS = ['vps-6044341-x.dattaweb.com',
-'www.vps-6044341-x.dattaweb.com']
+'www.vps-6044341-x.dattaweb.com', 'https://vps-6044341-x.dattaweb.com', '200.58.98.7', 'www.200.58.98.7']
 
 
 # Application definition
@@ -124,3 +124,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_TRUSTED_ORIGINS=["https://vps-6044341-x.dattaweb.com"]
