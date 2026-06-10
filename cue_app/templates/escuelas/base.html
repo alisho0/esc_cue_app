@@ -6,6 +6,15 @@
     <title>{% block title %}Sistema{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     {% block extra_head %}{% endblock %}
+    <style>
+        .barra-acciones {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+    }
+    </style>
 </head>
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
