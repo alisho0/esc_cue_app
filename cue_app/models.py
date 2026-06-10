@@ -52,5 +52,9 @@ class Alumno(models.Model):
         default=False
     )
 
+    editado_por_escuela = models.BooleanField(
+        default=False
+    )
+
     def __str__(self):
         return f"{self.apellido}, {self.nombre}"

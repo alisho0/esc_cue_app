@@ -1,0 +1,23 @@
+{% extends 'escuelas/base.html' %}
+
+{% block title %}Editar alumno{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="h4">Editar curso: {{ alumno.apellido }}, {{ alumno.nombre }}</h1>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary ms-2">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -6,6 +6,8 @@ from .forms import AlumnoForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from .forms import CursoEditForm
+from django.shortcuts import get_object_or_404
 
 def login_view(request):
 
@@ -59,6 +61,9 @@ def dashboard(request):
     )
 
     if request.method == "POST":
+        # Do not allow modifications if the school has finalized the upload
+        if escuela.asistencia_completada:
+            return redirect('dashboard')
 
         for alumno in alumnos:
 
@@ -143,6 +148,10 @@ def agregar_alumno(request):
         user=request.user
     )
 
+    # Prevent adding new alumnos after finalization
+    if escuela.asistencia_completada:
+        return redirect('dashboard')
+
     if request.method == "POST":
         form = AlumnoForm(request.POST)
         if form.is_valid():
@@ -159,3 +168,30 @@ def agregar_alumno(request):
         'escuelas/agregar_alumno.html',
         {'form': form, 'escuela': escuela}
     )
+
+
+@login_required
+def editar_alumno(request, alumno_id):
+
+    if request.user.is_staff:
+        return redirect('/admin')
+
+    escuela = Escuela.objects.get(user=request.user)
+
+    # Prevent editing after finalization
+    if escuela.asistencia_completada:
+        return redirect('dashboard')
+
+    alumno = get_object_or_404(Alumno, pk=alumno_id, escuela=escuela)
+
+    if request.method == 'POST':
+        form = CursoEditForm(request.POST, instance=alumno)
+        if form.is_valid():
+            alumno = form.save(commit=False)
+            alumno.editado_por_escuela = True
+            alumno.save()
+            return redirect('dashboard')
+    else:
+        form = CursoEditForm(instance=alumno)
+
+    return render(request, 'escuelas/editar_alumno.html', {'form': form, 'escuela': escuela, 'alumno': alumno})

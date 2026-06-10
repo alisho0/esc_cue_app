@@ -9,4 +9,6 @@ urlpatterns = [
     path('exportar/<int:escuela_id>/', exportar_escuela, name='exportar_escuela'),
     path('finalizar-carga/', finalizar_carga, name='finalizar_carga'),
     path('agregar-alumno/', agregar_alumno, name='agregar_alumno')
+    ,
+    path('editar-alumno/<int:alumno_id>/', editar_alumno, name='editar_alumno')
 ]

@@ -22,3 +22,12 @@ class AlumnoForm(forms.ModelForm):
             'curso': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Curso'}),
             'localidad': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Localidad'}),
         }
+
+
+class CursoEditForm(forms.ModelForm):
+    class Meta:
+        model = Alumno
+        fields = ['curso']
+        widgets = {
+            'curso': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Curso'}),
+        }

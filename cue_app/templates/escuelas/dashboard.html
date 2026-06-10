@@ -12,8 +12,12 @@
                 <p>Recuerda <b>GUARDAR CAMBIOS</b> después de cada modificación en el botón que está en el fondo.</p>
 
                 <div class="mt-3">
-                    <a href="{% url 'agregar_alumno' %}" class="btn btn-success btn-sm me-2"><b>+ AGREGAR ALUMNO</b></a>
-                    <button class="btn btn-danger btn-sm" id="finalizar"><b>FINALIZAR CARGA</b></button>
+                    {% if not escuela.asistencia_completada %}
+                        <a href="{% url 'agregar_alumno' %}" class="btn btn-success btn-sm me-2"><b>+ AGREGAR ALUMNO</b></a>
+                        <button class="btn btn-danger btn-sm" id="finalizar"><b>FINALIZAR CARGA</b></button>
+                    {% else %}
+                        <span class="badge bg-secondary">Carga finalizada</span>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -76,7 +80,7 @@
                                     <td class="text-center">
                                         <div class="form-check form-switch justify-content-center d-flex mb-0">
                                             <input type="hidden" name="cumple_{{ alumno.id }}" value="off">
-                                            <input class="form-check-input" type="checkbox" id="cumple_{{ alumno.id }}" name="cumple_{{ alumno.id }}" value="on" {% if alumno.cumple_asistencia %}checked{% endif %}>
+                                            <input class="form-check-input" type="checkbox" id="cumple_{{ alumno.id }}" name="cumple_{{ alumno.id }}" value="on" {% if alumno.cumple_asistencia %}checked{% endif %} {% if escuela.asistencia_completada %}disabled{% endif %}>
                                         </div>
                                     </td>
                                     <td class="text-center">
@@ -84,6 +88,9 @@
                                             <span class="badge bg-success">Cumple</span>
                                         {% else %}
                                             <span class="badge bg-danger">No cumple</span>
+                                        {% endif %}
+                                        {% if not escuela.asistencia_completada %}
+                                            <a href="{% url 'editar_alumno' alumno.id %}" class="btn btn-sm btn-link ms-2">Editar curso</a>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -98,9 +105,11 @@
                     </table>
                 </div>
 
+                {% if not escuela.asistencia_completada %}
                 <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-primary">Guardar cambios</button>
                 </div>
+                {% endif %}
             </form>
         </div>
     </div>
