@@ -20,7 +20,8 @@ def generar_excel_global():
         "Escuela",
         "CUE",
         "Cumple el 80% de asistencia",
-        "Creado por escuela"
+        "Creado por escuela",
+        "Editado por escuela"
     ]
 
     ws.append(headers)
@@ -39,7 +40,8 @@ def generar_excel_global():
             alumno.escuela.nombre,
             alumno.escuela.cue,
             "Sí" if alumno.cumple_asistencia else "No",
-            "Sí" if alumno.creado_por_escuela else "No"
+            "Sí" if alumno.creado_por_escuela else "No",
+            "Sí" if alumno.editado_por_escuela else "No",
         ])
 
     return wb
@@ -66,7 +68,8 @@ def generar_excel_escuela(escuela_id):
         "Escuela",
         "CUE",
         "Cumple el 80% de asistencia",
-        "Creado por escuela"
+        "Creado por escuela",
+        "Editado por escuela"
     ]
 
     ws.append(headers)
@@ -87,6 +90,7 @@ def generar_excel_escuela(escuela_id):
             alumno.escuela.cue,
             "Sí" if alumno.cumple_asistencia else "No",
             "Sí" if alumno.creado_por_escuela else "No"
+            "Sí" if alumno.editado_por_escuela else "No"
         ])
 
     return wb

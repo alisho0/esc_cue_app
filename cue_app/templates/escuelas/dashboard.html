@@ -68,6 +68,7 @@
                                 <th scope="col">Curso</th>
                                 <th scope="col" class="text-center">¿Cumple con 80% de asistencia?</th>
                                 <th scope="col" class="text-center">Estado</th>
+                                <th scope="col" class="text-center">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -89,8 +90,10 @@
                                         {% else %}
                                             <span class="badge bg-danger">No cumple</span>
                                         {% endif %}
+                                    </td>
+                                    <td>
                                         {% if not escuela.asistencia_completada %}
-                                            <a href="{% url 'editar_alumno' alumno.id %}" class="btn btn-sm btn-link ms-2">Editar curso</a>
+                                            <a href="{% url 'editar_alumno' alumno.id %}" class="btn btn-sm btn-primary ms-2">Editar curso</a>
                                         {% endif %}
                                     </td>
                                 </tr>
