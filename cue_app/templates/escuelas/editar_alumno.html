@@ -14,10 +14,61 @@
 
                 <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-primary">Guardar</button>
-                    <a href="{% url 'dashboard' %}" class="btn btn-secondary ms-2">Cancelar</a>
+                    <a href="{% url 'dashboard' %}" id="cancelar" class="btn btn-secondary ms-2">Cancelar</a>
                 </div>
             </form>
+
+            <div class="modal fade" id="confirmCancelModal" tabindex="-1" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-confirm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmCancelModalLabel">Salir sin guardar</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="mb-0">Tienes cambios sin guardar. Si sales, se perderán los cambios realizados.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="cancelarConfirmYes">Salir sin guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    let formChanged = false;
+    const form = document.querySelector('form');
+
+    if (form) {
+        form.addEventListener('change', () => {
+            formChanged = true;
+        });
+
+        form.addEventListener('submit', () => {
+            formChanged = false;
+        });
+    }
+
+    const cancelar = document.querySelector('#cancelar');
+    if (cancelar) {
+        cancelar.addEventListener('click', function (e) {
+            if (formChanged) {
+                e.preventDefault();
+                const cancelModal = new bootstrap.Modal(document.getElementById('confirmCancelModal'));
+                cancelModal.show();
+            }
+        });
+    }
+
+    const cancelarConfirmYes = document.querySelector('#cancelarConfirmYes');
+    if (cancelarConfirmYes) {
+        cancelarConfirmYes.addEventListener('click', function () {
+            window.location.href = "{% url 'dashboard' %}";
+        });
+    }
+</script>
 {% endblock %}
