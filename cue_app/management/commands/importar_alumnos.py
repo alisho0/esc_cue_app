@@ -25,6 +25,7 @@ class Command(BaseCommand):
                     escuela=escuela,
                     nombre=row['nombre'],
                     apellido=row['apellido'],
+                    fecha_nacimiento=row['nacimiento'],
                     cumple_asistencia=cumple,
                     curso=row['curso'],
                     localidad=row['localidad'],
