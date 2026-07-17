@@ -4,6 +4,7 @@ from .exports import generar_excel_global, generar_excel_escuela
 from .models import Escuela, Alumno
 from .forms import AlumnoForm
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import CursoEditForm
@@ -74,6 +75,7 @@ def dashboard(request):
             alumno.cumple_asistencia = valor == 'on'
             alumno.save()
 
+        messages.success(request, 'Cambios guardados correctamente')
         return redirect('dashboard')
 
     total_alumnos = alumnos.count()
@@ -159,6 +161,7 @@ def agregar_alumno(request):
             alumno.escuela = escuela
             alumno.creado_por_escuela = True
             alumno.save()
+            messages.success(request, 'Cambios guardados correctamente')
             return redirect('dashboard')
     else:
         form = AlumnoForm()
@@ -190,6 +193,7 @@ def editar_alumno(request, alumno_id):
             alumno = form.save(commit=False)
             alumno.editado_por_escuela = True
             alumno.save()
+            messages.success(request, 'Cambios guardados correctamente')
             return redirect('dashboard')
     else:
         form = CursoEditForm(instance=alumno)

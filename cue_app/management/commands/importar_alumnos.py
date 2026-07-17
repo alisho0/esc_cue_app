@@ -11,20 +11,35 @@ class Command(BaseCommand):
             reader = csv.DictReader(file)
 
             for row in reader:
-                cue = row['cue'].strip()
+                cue = (row.get('cue') or '').strip()
+
+                if not cue:
+                    self.stdout.write(self.style.WARNING('Se omite una fila sin CUE.'))
+                    continue
 
                 print("Buscando:", repr(cue))
 
-                escuela = Escuela.objects.get(cue=cue)
+                try:
+                    escuela = Escuela.objects.get(cue=cue)
+                except Escuela.DoesNotExist:
+                    self.stdout.write(
+                        self.style.WARNING(f'No se encontró la escuela con CUE {cue!r}. Se omite el alumno.')
+                    )
+                    continue
 
                 cumple = None
                 if 'cumple_asistencia' in row:
                     cumple = row['cumple_asistencia'].lower() == 'true'
 
+                fecha_nacimiento = (row.get('nacimiento') or '').strip()
+                if not fecha_nacimiento:
+                    fecha_nacimiento = None
+
                 Alumno.objects.create(
                     escuela=escuela,
                     nombre=row['nombre'],
                     apellido=row['apellido'],
+                    fecha_nacimiento=fecha_nacimiento,
                     cumple_asistencia=cumple,
                     curso=row['curso'],
                     localidad=row['localidad'],

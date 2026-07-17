@@ -17,7 +17,14 @@ class AlumnoAdmin(admin.ModelAdmin):
         'creado_por_escuela'
     )
 
+    search_fields = (
+        'dni',
+        'apellido',
+        'nombre'
+    )
+
     list_filter = (
+        'escuela',
         'creado_por_escuela',
         'cumple_asistencia'
     )

@@ -42,6 +42,10 @@ class Alumno(models.Model):
     curso = models.CharField(max_length=150)
     dni = models.CharField(max_length=150)
     localidad = models.CharField(max_length=150)
+    fecha_nacimiento = models.DateField(
+        null=True,
+        blank=True
+    )
 
     cumple_asistencia = models.BooleanField(
         null=True,

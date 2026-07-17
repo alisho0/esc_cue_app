@@ -58,12 +58,13 @@
             <form method="POST">
                 {% csrf_token %}
 
-                <div class="table-responsive">
+                <div class="table-responsive table-responsive-sticky">
                     <table class="table table-hover align-middle mb-4">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">Alumno</th>
                                 <th>DNI</th>
+                                <th>Fecha de nacimiento</th>
                                 <th>Localidad</th>
                                 <th scope="col">Curso</th>
                                 <th scope="col" class="text-center">¿Cumple con 80% de asistencia?</th>
@@ -76,6 +77,13 @@
                                 <tr>
                                     <td>{{ alumno.apellido }}, {{ alumno.nombre }}</td>
                                     <td>{{alumno.dni}}</td>
+                                    <td>
+                                        {% if alumno.fecha_nacimiento %}
+                                            {{ alumno.fecha_nacimiento|date:"d/m/Y" }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
                                     <td>{{alumno.localidad}}</td>
                                     <td>{{ alumno.curso }}</td>
                                     <td class="text-center">
@@ -116,6 +124,24 @@
                 </div>
                 {% endif %}
             </form>
+
+            <div class="modal fade" id="confirmFinalizarModal" tabindex="-1" aria-labelledby="confirmFinalizarModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-confirm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmFinalizarModalLabel">Confirmar finalización</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="mb-0">¿Estás seguro de finalizar la carga? No podrás volver a registrar más cambios.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="confirmFinalizarYes">Finalizar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -125,9 +151,15 @@ let formChanged = false;
 
 const form = document.querySelector('form');
 
-form.addEventListener('change', () => {
-    formChanged = true;
-});
+if (form) {
+    form.addEventListener('change', () => {
+        formChanged = true;
+    });
+
+    form.addEventListener('submit', () => {
+        formChanged = false;
+    });
+}
 
 window.addEventListener('beforeunload', function (e) {
 
@@ -139,16 +171,19 @@ window.addEventListener('beforeunload', function (e) {
     }
 });
 
-form.addEventListener('submit', () => {
-    formChanged = false;
-});
-
 const finalizar = document.querySelector('#finalizar');
-finalizar.addEventListener('click', () => {
-    const res = confirm("¿Estás seguro de finalizar la carga? No podrás volver a registrar más cambios.")
-    if(res) {
+if (finalizar) {
+    finalizar.addEventListener('click', () => {
+        const finalizarModal = new bootstrap.Modal(document.getElementById('confirmFinalizarModal'));
+        finalizarModal.show();
+    });
+}
+
+const confirmarFinalizar = document.querySelector('#confirmFinalizarYes');
+if (confirmarFinalizar) {
+    confirmarFinalizar.addEventListener('click', () => {
         window.location.href = "{% url 'finalizar_carga' %}";
-    }
-})
+    });
+}
 </script>
 {% endblock %}
