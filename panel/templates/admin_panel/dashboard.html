@@ -1,0 +1,59 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Dashboard | Panel Administrativo{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4">Panel Administrativo</h1>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-xl-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Total de escuelas</h5>
+                    <p class="display-6 mb-0">{{ total_escuelas }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Total de alumnos</h5>
+                    <p class="display-6 mb-0">{{ total_alumnos }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Escuelas finalizadas</h5>
+                    <p class="display-6 mb-0">{{ escuelas_finalizadas }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Escuelas pendientes</h5>
+                    <p class="display-6 mb-0">{{ escuelas_pendientes }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-6 col-lg-3">
+            <a href="#" class="btn btn-primary btn-lg w-100 py-4">Gestionar Escuelas</a>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <a href="#" class="btn btn-outline-primary btn-lg w-100 py-4">Gestionar Alumnos</a>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <a href="#" class="btn btn-success btn-lg w-100 py-4">Importar Padrón</a>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <a href="#" class="btn btn-outline-success btn-lg w-100 py-4">Exportar Datos</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

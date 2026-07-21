@@ -13,23 +13,31 @@ from django.shortcuts import get_object_or_404
 def login_view(request):
 
     if request.user.is_authenticated:
+        if request.user.is_staff or request.user.is_superuser:
+            return redirect('panel:dashboard')
         return redirect('dashboard')
 
     error = None
 
     if request.method == "POST":
-
         cue = request.POST.get('cue')
         dni = request.POST.get('dni')
 
+        user = authenticate(request, username=cue, password=dni)
+        if user is not None:
+            login(request, user)
+            if user.is_staff or user.is_superuser:
+                return redirect('panel:dashboard')
+            return redirect('dashboard')
+
         try:
             escuela = Escuela.objects.get(cue=cue)
-            
             if escuela.dni == dni:
                 login(request, escuela.user)
+                if escuela.user and (escuela.user.is_staff or escuela.user.is_superuser):
+                    return redirect('panel:dashboard')
                 return redirect('dashboard')
-            else:
-                error = "DNI incorrecto"
+            error = "DNI incorrecto"
         except Escuela.DoesNotExist:
             error = "CUE no encontrado"
 

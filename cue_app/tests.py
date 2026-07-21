@@ -1,6 +1,7 @@
 import os
 import tempfile
 
+from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.test import TestCase
 
@@ -13,6 +14,18 @@ class AlumnoFormTests(TestCase):
         form = AlumnoForm()
 
         self.assertIn('fecha_nacimiento', form.fields)
+
+
+class LoginTests(TestCase):
+    def test_superuser_can_login_without_school(self):
+        User = get_user_model()
+        user = User.objects.create_user(username='admin', password='secret123', is_superuser=True, is_staff=True)
+
+        response = self.client.post('/', {'cue': 'admin', 'dni': 'secret123'})
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.endswith('/panel/dashboard/'))
+        self.assertTrue(user.is_authenticated)
 
 
 class ImportarAlumnosTests(TestCase):
