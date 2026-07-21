@@ -36,6 +36,8 @@ LOGIN_URL = 'login'
 # Application definition
 
 INSTALLED_APPS = [
+    "tailwind",
+    "theme",
     'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,6 +48,8 @@ INSTALLED_APPS = [
     'cue_app',
     'panel',
 ]
+TAILWIND_APP_NAME = "theme"
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

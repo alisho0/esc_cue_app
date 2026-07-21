@@ -1,0 +1,133 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Alumnos | Panel Administrativo{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="rounded-3xl bg-white px-6 py-6 shadow-lg ring-1 ring-slate-200 sm:px-8">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <p class="text-sm uppercase tracking-[0.2em] text-slate-500">Alumnos</p>
+                <h2 class="mt-1 text-3xl font-semibold text-slate-900">Listado de alumnos</h2>
+                <p class="mt-2 text-sm text-slate-600">Filtra y busca por DNI, CUE, asistencia y creación por escuela.</p>
+            </div>
+            <div class="inline-flex items-center gap-3">
+                <span class="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">Total: {{ total_alumnos }}</span>
+            </div>
+        </div>
+
+        <form method="get" class="mt-6 grid gap-4 lg:grid-cols-[1fr_1fr_1fr_1fr_0.8fr]">
+            <label class="block">
+                <span class="text-slate-700 text-sm font-medium">Buscar por DNI</span>
+                <input type="text" name="dni" value="{{ dni_query }}" placeholder="DNI"
+                    class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200" />
+            </label>
+            <label class="block">
+                <span class="text-slate-700 text-sm font-medium">Buscar por CUE</span>
+                <input type="text" name="cue" value="{{ cue_query }}" placeholder="CUE"
+                    class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200" />
+            </label>
+            <label class="block">
+                <span class="text-slate-700 text-sm font-medium">Creado por escuela</span>
+                <select name="creado"
+                    class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200">
+                    <option value="todos" {% if creado == 'todos' %}selected{% endif %}>Todos</option>
+                    <option value="si" {% if creado == 'si' %}selected{% endif %}>Sí</option>
+                    <option value="no" {% if creado == 'no' %}selected{% endif %}>No</option>
+                </select>
+            </label>
+            <label class="block">
+                <span class="text-slate-700 text-sm font-medium">Cumple asistencia</span>
+                <select name="cumple"
+                    class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200">
+                    <option value="todos" {% if cumple == 'todos' %}selected{% endif %}>Todos</option>
+                    <option value="si" {% if cumple == 'si' %}selected{% endif %}>Sí</option>
+                    <option value="no" {% if cumple == 'no' %}selected{% endif %}>No</option>
+                </select>
+            </label>
+            <div class="flex items-end gap-3">
+                <button type="submit" class="inline-flex h-12 items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
+                    Filtrar
+                </button>
+                <a href="{% url 'panel:alumnos' %}" class="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-50">
+                    Limpiar
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-slate-200">
+        <div class="max-h-[calc(100vh-320px)] overflow-auto">
+            <table class="min-w-full divide-y divide-slate-200 text-sm">
+                <thead class="bg-slate-50 text-slate-700">
+                    <tr>
+                        <th scope="col" class="px-6 py-4 text-left font-semibold uppercase tracking-[0.16em]">Apellido</th>
+                        <th scope="col" class="px-6 py-4 text-left font-semibold uppercase tracking-[0.16em]">Nombre</th>
+                        <th scope="col" class="px-6 py-4 text-left font-semibold uppercase tracking-[0.16em]">DNI</th>
+                        <th scope="col" class="px-6 py-4 text-left font-semibold uppercase tracking-[0.16em]">Escuela</th>
+                        <th scope="col" class="px-6 py-4 text-left font-semibold uppercase tracking-[0.16em]">CUE</th>
+                        <th scope="col" class="px-6 py-4 text-left font-semibold uppercase tracking-[0.16em]">Cumple asistencia</th>
+                        <th scope="col" class="px-6 py-4 text-left font-semibold uppercase tracking-[0.16em]">Creado por escuela</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 bg-white">
+                    {% for alumno in alumnos %}
+                    <tr class="odd:bg-slate-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-slate-900">{{ alumno.apellido }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-slate-900">{{ alumno.nombre }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-slate-600">{{ alumno.dni }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-slate-900">{{ alumno.escuela.nombre }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-slate-600">{{ alumno.escuela.cue }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if alumno.cumple_asistencia %}
+                                <span class="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">Sí</span>
+                            {% else %}
+                                <span class="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">No</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if alumno.creado_por_escuela %}
+                                <span class="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">Sí</span>
+                            {% else %}
+                                <span class="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">No</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="px-6 py-10 text-center text-slate-500">No hay alumnos que cumplan con estos filtros.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <nav class="flex flex-wrap items-center justify-between rounded-3xl bg-white px-6 py-4 shadow-lg ring-1 ring-slate-200" aria-label="Paginación de alumnos">
+        <div class="text-sm text-slate-600">
+            Página {{ page_obj.number }} de {{ paginator.num_pages }}
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+            {% if page_obj.has_previous %}
+            <a href="?page=1{% if query_string %}&{{ query_string }}{% endif %}" class="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50">Primera</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if query_string %}&{{ query_string }}{% endif %}" class="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50">Anterior</a>
+            {% else %}
+            <span class="rounded-2xl border border-slate-200 bg-slate-100 px-4 py-2 text-sm text-slate-400">Primera</span>
+            <span class="rounded-2xl border border-slate-200 bg-slate-100 px-4 py-2 text-sm text-slate-400">Anterior</span>
+            {% endif %}
+
+            <span class="px-4 py-2 text-sm text-slate-700">Página {{ page_obj.number }}</span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if query_string %}&{{ query_string }}{% endif %}" class="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50">Siguiente</a>
+            <a href="?page={{ paginator.num_pages }}{% if query_string %}&{{ query_string }}{% endif %}" class="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50">Última</a>
+            {% else %}
+            <span class="rounded-2xl border border-slate-200 bg-slate-100 px-4 py-2 text-sm text-slate-400">Siguiente</span>
+            <span class="rounded-2xl border border-slate-200 bg-slate-100 px-4 py-2 text-sm text-slate-400">Última</span>
+            {% endif %}
+        </div>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

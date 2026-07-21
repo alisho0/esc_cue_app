@@ -2,6 +2,7 @@ from functools import wraps
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect, render, resolve_url
 
@@ -40,3 +41,83 @@ def dashboard(request):
     }
 
     return render(request, 'admin_panel/dashboard.html', context)
+
+
+@login_required
+@admin_required
+def escuelas(request):
+    cue_query = request.GET.get('cue', '').strip()
+    estado = request.GET.get('estado', 'todos')
+
+    escuelas = Escuela.objects.all().order_by('nombre')
+
+    if cue_query:
+        escuelas = escuelas.filter(cue__icontains=cue_query)
+
+    if estado == 'completada':
+        escuelas = escuelas.filter(asistencia_completada=True)
+    elif estado == 'pendiente':
+        escuelas = escuelas.filter(asistencia_completada=False)
+
+    context = {
+        'escuelas': escuelas,
+        'total_escuelas': escuelas.count(),
+        'cue_query': cue_query,
+        'estado': estado,
+    }
+    return render(request, 'admin_panel/escuelas.html', context)
+
+
+@login_required
+@admin_required
+def alumnos(request):
+    dni_query = request.GET.get('dni', '').strip()
+    cue_query = request.GET.get('cue', '').strip()
+    creado = request.GET.get('creado', 'todos')
+    cumple = request.GET.get('cumple', 'todos')
+
+    alumnos_qs = Alumno.objects.select_related('escuela').all().order_by('apellido', 'nombre')
+
+    if dni_query:
+        alumnos_qs = alumnos_qs.filter(dni__icontains=dni_query)
+
+    if cue_query:
+        alumnos_qs = alumnos_qs.filter(escuela__cue__icontains=cue_query)
+
+    if creado == 'si':
+        alumnos_qs = alumnos_qs.filter(creado_por_escuela=True)
+    elif creado == 'no':
+        alumnos_qs = alumnos_qs.filter(creado_por_escuela=False)
+
+    if cumple == 'si':
+        alumnos_qs = alumnos_qs.filter(cumple_asistencia=True)
+    elif cumple == 'no':
+        alumnos_qs = alumnos_qs.filter(cumple_asistencia=False)
+
+    paginator = Paginator(alumnos_qs, 20)
+    page_number = request.GET.get('page', 1)
+
+    try:
+        alumnos_page = paginator.page(page_number)
+    except PageNotAnInteger:
+        alumnos_page = paginator.page(1)
+    except EmptyPage:
+        alumnos_page = paginator.page(paginator.num_pages)
+
+    query_data = request.GET.copy()
+    if 'page' in query_data:
+        del query_data['page']
+    query_string = query_data.urlencode()
+
+    context = {
+        'alumnos': alumnos_page,
+        'dni_query': dni_query,
+        'cue_query': cue_query,
+        'creado': creado,
+        'cumple': cumple,
+        'total_alumnos': alumnos_qs.count(),
+        'paginator': paginator,
+        'page_obj': alumnos_page,
+        'query_string': query_string,
+    }
+    return render(request, 'admin_panel/alumnos.html', context)

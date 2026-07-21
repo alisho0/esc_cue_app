@@ -3,57 +3,51 @@
 {% block title %}Dashboard | Panel Administrativo{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <h1 class="h3 mb-4">Panel Administrativo</h1>
-
-    <div class="row g-4 mb-4">
-        <div class="col-md-6 col-xl-3">
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h5 class="card-title">Total de escuelas</h5>
-                    <p class="display-6 mb-0">{{ total_escuelas }}</p>
-                </div>
+<div class="space-y-8">
+    <div class="rounded-3xl bg-white px-6 py-6 shadow-lg ring-1 ring-slate-200 sm:px-8">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <p class="text-sm uppercase tracking-[0.2em] text-slate-500">Visión general</p>
+                <h2 class="mt-1 text-3xl font-semibold text-slate-900">Panel Administrativo</h2>
             </div>
-        </div>
-        <div class="col-md-6 col-xl-3">
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h5 class="card-title">Total de alumnos</h5>
-                    <p class="display-6 mb-0">{{ total_alumnos }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-xl-3">
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h5 class="card-title">Escuelas finalizadas</h5>
-                    <p class="display-6 mb-0">{{ escuelas_finalizadas }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-xl-3">
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h5 class="card-title">Escuelas pendientes</h5>
-                    <p class="display-6 mb-0">{{ escuelas_pendientes }}</p>
-                </div>
+            <div class="inline-flex rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">
+                Bienvenido de nuevo
             </div>
         </div>
     </div>
 
-    <div class="row g-3">
-        <div class="col-md-6 col-lg-3">
-            <a href="#" class="btn btn-primary btn-lg w-100 py-4">Gestionar Escuelas</a>
-        </div>
-        <div class="col-md-6 col-lg-3">
-            <a href="#" class="btn btn-outline-primary btn-lg w-100 py-4">Gestionar Alumnos</a>
-        </div>
-        <div class="col-md-6 col-lg-3">
-            <a href="#" class="btn btn-success btn-lg w-100 py-4">Importar Padrón</a>
-        </div>
-        <div class="col-md-6 col-lg-3">
-            <a href="#" class="btn btn-outline-success btn-lg w-100 py-4">Exportar Datos</a>
-        </div>
+    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <article class="overflow-hidden rounded-3xl bg-white p-6 shadow-lg ring-1 ring-slate-200">
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Total de escuelas</p>
+            <p class="mt-4 text-4xl font-semibold text-slate-900">{{ total_escuelas }}</p>
+        </article>
+        <article class="overflow-hidden rounded-3xl bg-white p-6 shadow-lg ring-1 ring-slate-200">
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Total de alumnos</p>
+            <p class="mt-4 text-4xl font-semibold text-slate-900">{{ total_alumnos }}</p>
+        </article>
+        <article class="overflow-hidden rounded-3xl bg-white p-6 shadow-lg ring-1 ring-slate-200">
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Escuelas finalizadas</p>
+            <p class="mt-4 text-4xl font-semibold text-slate-900">{{ escuelas_finalizadas }}</p>
+        </article>
+        <article class="overflow-hidden rounded-3xl bg-white p-6 shadow-lg ring-1 ring-slate-200">
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Escuelas pendientes</p>
+            <p class="mt-4 text-4xl font-semibold text-slate-900">{{ escuelas_pendientes }}</p>
+        </article>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <a href="{% url 'panel:escuelas' %}" class="inline-flex items-center justify-center rounded-3xl bg-slate-900 px-5 py-5 text-center text-sm font-semibold text-white transition hover:bg-slate-800">
+            Gestionar Escuelas
+        </a>
+        <a href="{% url 'panel:alumnos' %}" class="inline-flex items-center justify-center rounded-3xl border border-slate-200 bg-white px-5 py-5 text-center text-sm font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-50">
+            Gestionar Alumnos
+        </a>
+        <a href="#" class="inline-flex items-center justify-center rounded-3xl bg-emerald-600 px-5 py-5 text-center text-sm font-semibold text-white transition hover:bg-emerald-500">
+            Importar Padrón
+        </a>
+        <a href="{% url 'exportar_excel' %}" class="inline-flex items-center justify-center rounded-3xl border border-emerald-200 bg-white px-5 py-5 text-center text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-50">
+            Exportar Datos
+        </a>
     </div>
 </div>
 {% endblock %}
