@@ -4,8 +4,9 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponseForbidden
-from django.shortcuts import redirect, render, resolve_url
+from django.shortcuts import redirect, render, resolve_url, get_object_or_404
 
+from cue_app.forms import PanelAlumnoForm
 from cue_app.models import Alumno, Escuela
 
 
@@ -119,5 +120,48 @@ def alumnos(request):
         'paginator': paginator,
         'page_obj': alumnos_page,
         'query_string': query_string,
+        'escuelas': Escuela.objects.order_by('nombre'),
     }
     return render(request, 'admin_panel/alumnos.html', context)
+
+
+@login_required
+@admin_required
+def alumno_crear(request):
+    if request.method != 'POST':
+        return redirect('panel:alumnos')
+
+    form = PanelAlumnoForm(request.POST)
+    if form.is_valid():
+        alumno = form.save(commit=False)
+        alumno.creado_por_escuela = False
+        alumno.editado_por_escuela = False
+        alumno.save()
+
+    return redirect('panel:alumnos')
+
+
+@login_required
+@admin_required
+def alumno_editar(request, alumno_id):
+    alumno = get_object_or_404(Alumno, pk=alumno_id)
+    if request.method != 'POST':
+        return redirect('panel:alumnos')
+
+    form = PanelAlumnoForm(request.POST, instance=alumno)
+    if form.is_valid():
+        alumno = form.save()
+        alumno.editado_por_escuela = True
+        alumno.save(update_fields=['editado_por_escuela'])
+
+    return redirect('panel:alumnos')
+
+
+@login_required
+@admin_required
+def alumno_eliminar(request, alumno_id):
+    if request.method == 'POST':
+        alumno = get_object_or_404(Alumno, pk=alumno_id)
+        alumno.delete()
+
+    return redirect('panel:alumnos')

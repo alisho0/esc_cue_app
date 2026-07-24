@@ -11,7 +11,10 @@
                 <h2 class="mt-1 text-3xl font-semibold text-slate-900">Listado de alumnos</h2>
                 <p class="mt-2 text-sm text-slate-600">Filtra y busca por DNI, CUE, asistencia y creación por escuela.</p>
             </div>
-            <div class="inline-flex items-center gap-3">
+            <div class="inline-flex flex-wrap items-center gap-3">
+                <button type="button" id="open-create-alumno" class="inline-flex cursor-pointer h-12 items-center justify-center rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500">
+                    Nuevo alumno
+                </button>
                 <span class="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">Total: {{ total_alumnos }}</span>
             </div>
         </div>
@@ -46,10 +49,10 @@
                 </select>
             </label>
             <div class="flex items-end gap-3">
-                <button type="submit" class="inline-flex h-12 items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
+                <button type="submit" class="inline-flex cursor-pointer h-12 items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
                     Filtrar
                 </button>
-                <a href="{% url 'panel:alumnos' %}" class="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-50">
+                <a href="{% url 'panel:alumnos' %}" class="inline-flex cursor-pointer h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-50">
                     Limpiar
                 </a>
             </div>
@@ -68,6 +71,7 @@
                         <th scope="col" class="px-6 py-4 text-left font-semibold uppercase tracking-[0.16em]">CUE</th>
                         <th scope="col" class="px-6 py-4 text-left font-semibold uppercase tracking-[0.16em]">Cumple asistencia</th>
                         <th scope="col" class="px-6 py-4 text-left font-semibold uppercase tracking-[0.16em]">Creado por escuela</th>
+                        <th scope="col" class="px-6 py-4 text-left font-semibold uppercase tracking-[0.16em]">Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200 bg-white">
@@ -92,6 +96,16 @@
                                 <span class="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">No</span>
                             {% endif %}
                         </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center justify-center gap-2">
+                                <button type="button" data-action="open-edit" data-url="{% url 'panel:alumno_editar' alumno.id %}" data-id="{{ alumno.id }}" data-escuela-id="{{ alumno.escuela.id }}" data-nombre="{{ alumno.nombre }}" data-apellido="{{ alumno.apellido }}" data-dni="{{ alumno.dni }}" data-curso="{{ alumno.curso }}" data-localidad="{{ alumno.localidad }}" data-fecha-nacimiento="{{ alumno.fecha_nacimiento|date:'Y-m-d' }}" data-cumple="{{ alumno.cumple_asistencia|default_if_none:False|yesno:'true,false' }}" class="inline-flex cursor-pointer rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-50">
+                                    Editar
+                                </button>
+                                <button type="button" data-action="open-delete" data-url="{% url 'panel:alumno_eliminar' alumno.id %}" data-name="{{ alumno.apellido }}, {{ alumno.nombre }}" class="inline-flex rounded-2xl cursor-pointer border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100">
+                                    Eliminar
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>
@@ -102,6 +116,161 @@
             </table>
         </div>
     </div>
+
+    <!-- Modal de creación/edición de alumno -->
+    <div id="alumno-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/60 px-4 py-6">
+        <div class="w-full max-w-2xl overflow-hidden rounded-3xl bg-white shadow-xl">
+            <div class="flex items-center justify-between border-b border-slate-200 px-6 py-5">
+                <div>
+                    <p id="alumno-modal-title" class="text-lg font-semibold text-slate-900">Nuevo alumno</p>
+                    <p class="mt-1 text-sm text-slate-600">Completa los datos del alumno para guardarlo.</p>
+                </div>
+                <button type="button" id="close-alumno-modal" class="text-slate-500 transition hover:text-slate-900">Cerrar</button>
+            </div>
+            <form id="alumno-form" action="{% url 'panel:alumno_crear' %}" method="post" class="space-y-4 px-6 py-6">
+                {% csrf_token %}
+                <input type="hidden" id="alumno-id" name="alumno_id" value="" />
+                <div class="grid gap-4 lg:grid-cols-2">
+                    <label class="block">
+                        <span class="text-slate-700 text-sm font-medium">Escuela</span>
+                        <select id="alumno-escuela" name="escuela" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200">
+                            <option value="">Selecciona una escuela</option>
+                            {% for escuela in escuelas %}
+                                <option value="{{ escuela.id }}">{{ escuela.nombre }} — {{ escuela.cue }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label class="block">
+                        <span class="text-slate-700 text-sm font-medium">Nombre</span>
+                        <input id="alumno-nombre" type="text" name="nombre" class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200" />
+                    </label>
+                    <label class="block">
+                        <span class="text-slate-700 text-sm font-medium">Apellido</span>
+                        <input id="alumno-apellido" type="text" name="apellido" class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200" />
+                    </label>
+                    <label class="block">
+                        <span class="text-slate-700 text-sm font-medium">DNI</span>
+                        <input id="alumno-dni" type="text" name="dni" class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200" />
+                    </label>
+                    <label class="block">
+                        <span class="text-slate-700 text-sm font-medium">Curso</span>
+                        <input id="alumno-curso" type="text" name="curso" class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200" />
+                    </label>
+                    <label class="block">
+                        <span class="text-slate-700 text-sm font-medium">Localidad</span>
+                        <input id="alumno-localidad" type="text" name="localidad" class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200" />
+                    </label>
+                    <label class="block">
+                        <span class="text-slate-700 text-sm font-medium">Fecha de nacimiento</span>
+                        <input id="alumno-fecha-nacimiento" type="date" name="fecha_nacimiento" class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200" />
+                    </label>
+                    <label class="flex items-center gap-3 pt-6">
+                        <input id="alumno-cumple" type="hidden" name="cumple_asistencia" value="off" />
+                        <input id="alumno-cumple-checkbox" type="checkbox" name="cumple_asistencia" value="on" class="h-5 w-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
+                        <span class="text-sm font-medium text-slate-700">Cumple asistencia</span>
+                    </label>
+                </div>
+                <div class="flex flex-wrap items-center justify-end gap-3 pt-2 border-t border-slate-200">
+                    <button type="button" id="cancel-alumno-modal" class="rounded-2xl cursor-pointer border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-50">Cancelar</button>
+                    <button type="submit" class="rounded-2xl cursor-pointer bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación de eliminación -->
+    <div id="delete-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/60 px-4 py-6">
+        <div class="w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-xl">
+            <div class="px-6 py-5">
+                <p class="text-lg font-semibold text-slate-900">Eliminar alumno</p>
+                <p id="delete-modal-text" class="mt-2 text-sm text-slate-600">¿Estás seguro de que deseas eliminar este alumno?</p>
+            </div>
+            <div class="border-t border-slate-200 px-6 py-5 flex flex-wrap items-center justify-end gap-3">
+                <button type="button" id="cancel-delete-modal" class="rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-50">Cancelar</button>
+                <form id="delete-form" action="" method="post" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" class="rounded-2xl bg-red-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-500">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const alumnoModal = document.getElementById('alumno-modal');
+        const deleteModal = document.getElementById('delete-modal');
+        const alumnoForm = document.getElementById('alumno-form');
+        const modalTitle = document.getElementById('alumno-modal-title');
+        const deleteForm = document.getElementById('delete-form');
+        const deleteModalText = document.getElementById('delete-modal-text');
+
+        function openAlumnoModal(mode, data = {}) {
+            alumnoModal.classList.remove('hidden');
+            alumnoForm.action = mode === 'create' ? '{% url "panel:alumno_crear" %}' : data.url || '{% url "panel:alumno_crear" %}';
+            modalTitle.textContent = mode === 'create' ? 'Nuevo alumno' : 'Editar alumno';
+            document.getElementById('alumno-id').value = data.id || '';
+            document.getElementById('alumno-escuela').value = data.escuelaId || '';
+            document.getElementById('alumno-nombre').value = data.nombre || '';
+            document.getElementById('alumno-apellido').value = data.apellido || '';
+            document.getElementById('alumno-dni').value = data.dni || '';
+            document.getElementById('alumno-curso').value = data.curso || '';
+            document.getElementById('alumno-localidad').value = data.localidad || '';
+            document.getElementById('alumno-fecha-nacimiento').value = data.fechaNacimiento || '';
+            document.getElementById('alumno-cumple-checkbox').checked = data.cumple === 'true';
+        }
+
+        function closeAlumnoModal() {
+            alumnoModal.classList.add('hidden');
+        }
+
+        function openDeleteModal(url, name) {
+            deleteModal.classList.remove('hidden');
+            deleteForm.action = url;
+            deleteModalText.textContent = `¿Estás seguro de que deseas eliminar al alumno ${name}? Esta acción no se puede deshacer.`;
+        }
+
+        function closeDeleteModal() {
+            deleteModal.classList.add('hidden');
+        }
+
+        document.getElementById('open-create-alumno').addEventListener('click', () => {
+            openAlumnoModal('create');
+        });
+
+        document.getElementById('close-alumno-modal').addEventListener('click', closeAlumnoModal);
+        document.getElementById('cancel-alumno-modal').addEventListener('click', closeAlumnoModal);
+
+        document.getElementById('cancel-delete-modal').addEventListener('click', closeDeleteModal);
+
+        document.querySelectorAll('button[data-action="open-edit"]').forEach((button) => {
+            button.addEventListener('click', () => {
+                openAlumnoModal('edit', {
+                    url: button.dataset.url,
+                    id: button.dataset.id,
+                    escuelaId: button.dataset.escuelaId,
+                    nombre: button.dataset.nombre,
+                    apellido: button.dataset.apellido,
+                    dni: button.dataset.dni,
+                    curso: button.dataset.curso,
+                    localidad: button.dataset.localidad,
+                    fechaNacimiento: button.dataset.fechaNacimiento,
+                    cumple: button.dataset.cumple,
+                });
+            });
+        });
+
+        document.querySelectorAll('button[data-action="open-delete"]').forEach((button) => {
+            button.addEventListener('click', () => {
+                openDeleteModal(button.dataset.url, button.dataset.name);
+            });
+        });
+
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeAlumnoModal();
+                closeDeleteModal();
+            }
+        });
+    </script>
 
     {% if page_obj.has_other_pages %}
     <nav class="flex flex-wrap items-center justify-between rounded-3xl bg-white px-6 py-4 shadow-lg ring-1 ring-slate-200" aria-label="Paginación de alumnos">
