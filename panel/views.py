@@ -10,6 +10,15 @@ from cue_app.forms import PanelAlumnoForm
 from cue_app.models import Alumno, Escuela
 
 
+def _sanitize_alumno_post_data(post_data):
+    cleaned_data = post_data.copy()
+    if 'cumple_asistencia' in cleaned_data:
+        cleaned_data['cumple_asistencia'] = 'on' if cleaned_data.get('cumple_asistencia') == 'on' else False
+    else:
+        cleaned_data['cumple_asistencia'] = False
+    return cleaned_data
+
+
 def admin_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
@@ -131,7 +140,7 @@ def alumno_crear(request):
     if request.method != 'POST':
         return redirect('panel:alumnos')
 
-    form = PanelAlumnoForm(request.POST)
+    form = PanelAlumnoForm(_sanitize_alumno_post_data(request.POST))
     if form.is_valid():
         alumno = form.save(commit=False)
         alumno.creado_por_escuela = False
@@ -148,7 +157,7 @@ def alumno_editar(request, alumno_id):
     if request.method != 'POST':
         return redirect('panel:alumnos')
 
-    form = PanelAlumnoForm(request.POST, instance=alumno)
+    form = PanelAlumnoForm(_sanitize_alumno_post_data(request.POST), instance=alumno)
     if form.is_valid():
         alumno = form.save()
         alumno.editado_por_escuela = True
