@@ -1,6 +1,23 @@
 import csv
+from datetime import datetime
+
 from cue_app.models import Escuela, Alumno
 from django.core.management.base import BaseCommand
+
+
+def parse_fecha_nacimiento(valor):
+    valor = (valor or '').strip()
+    if not valor:
+        return None
+
+    for formato in ('%Y-%m-%d', '%d/%m/%Y', '%d-%m-%Y', '%d/%m/%y'):
+        try:
+            return datetime.strptime(valor, formato).date()
+        except ValueError:
+            continue
+
+    return None
+
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
@@ -31,9 +48,14 @@ class Command(BaseCommand):
                 if 'cumple_asistencia' in row:
                     cumple = row['cumple_asistencia'].lower() == 'true'
 
-                fecha_nacimiento = (row.get('nacimiento') or '').strip()
-                if not fecha_nacimiento:
-                    fecha_nacimiento = None
+                fecha_nacimiento = parse_fecha_nacimiento(row.get('nacimiento'))
+                if row.get('nacimiento', '').strip() and fecha_nacimiento is None:
+                    self.stdout.write(
+                        self.style.WARNING(
+                            f"Fecha de nacimiento inválida {row['nacimiento']!r}. "
+                            'Se carga el alumno sin fecha.'
+                        )
+                    )
 
                 Alumno.objects.create(
                     escuela=escuela,
